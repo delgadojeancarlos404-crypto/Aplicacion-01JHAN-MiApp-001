@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MiApp_001.vistas.ListaMesasV"
+             BackgroundColor="#F3F4F6"
+             Title="Mesas">
+
+    <ContentPage.Resources>
+        <!-- Estilos reutilizables -->
+        <Style x:Key="FilterButtonStyle" TargetType="Button">
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="#374151" />
+        </Style>
+
+        <Style x:Key="CardFrameStyle" TargetType="Frame">
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="HasShadow" Value="True" />
+            <Setter Property="BackgroundColor" Value="White" />
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="Margin" Value="0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16" RowSpacing="12">
+
+        <!-- Fila 0: Título -->
+        <Label Grid.Row="0"
+               Text="Gestión de Mesas"
+               FontSize="22"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="#0F172A" />
+
+        <!-- Fila 1: Filtro de mesas -->
+        <HorizontalStackLayout Grid.Row="1"
+                               Spacing="8"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+            <Button Text="Todas"
+                    Style="{StaticResource FilterButtonStyle}"
+                    Command="{Binding VerTodosCommand}" />
+
+            <Button Text="Libres"
+                    Style="{StaticResource FilterButtonStyle}"
+                    Command="{Binding VerLibresCommand}" />
+
+            <Button Text="Ocupadas"
+                    Style="{StaticResource FilterButtonStyle}"
+                    Command="{Binding VerOcupadasCommand}" />
+
+            <Button Text="Reservadas"
+                    Style="{StaticResource FilterButtonStyle}"
+                    Command="{Binding VerReservadasCommand}" />
+        </HorizontalStackLayout>
+
+        <!-- Fila 2: Lista de mesas (CollectionView con Grid de 2 columnas) -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Mesas}"
+                        SelectionMode="Single"
+                        Margin="0,6,0,0"
+                        x:Name="MesasCollectionView">
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Style="{StaticResource CardFrameStyle}">
+                        <Grid ColumnDefinitions="48, *" RowDefinitions="Auto, Auto" ColumnSpacing="12">
+
+                            <!-- Indicador circular con color según estado -->
+                            <Frame WidthRequest="48"
+                                   HeightRequest="48"
+                                   CornerRadius="24"
+                                   Padding="0"
+                                   HasShadow="False"
+                                   VerticalOptions="Start"  
+                                   HorizontalOptions="Start"
+                                   BackgroundColor="{Binding EstadoMesa.ColorVisual}">
+                                <!-- Opcional: iniciales o icono del estado -->
+                            </Frame>
+
+                            <StackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="{Binding NumeroMesa, StringFormat='Mesa {0}'}"
+                                       FontAttributes="Bold"
+                                       FontSize="16"
+                                       TextColor="#0F172A" />
+
+                                <Label Text="{Binding Capacidad, StringFormat='Capacidad: {0}'}"
+                                       FontSize="13"
+                                       TextColor="#6B7280" />
+                            </StackLayout>
+
+                            <!-- Estado en la segunda fila, alineado a la derecha -->
+                            <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                   Text="{Binding EstadoMesa.NombreEstado}"
+                                   FontSize="12"
+                                   TextColor="#374151"
+                                   HorizontalOptions="End" />
+
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <StackLayout Padding="24" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="No hay mesas para mostrar" TextColor="#6B7280" HorizontalOptions="Center" />
+                </StackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>
